@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <title>Data Person</title>
+  </head>
+  <body>
+    <div>Data Person</div>
+    <hr />
+
+    <script>
+      const url = "http://localhost:8080/person";
+      //get data from server
+      function get() {
+        $.ajax({
+          url: url,
+          method: "GET",
+          dataType: "json",
+          success: function (data) {
+            
+            $("#mytable").find("tbody").empty();
+            $.each(data, function (key, value) {
+              
+              var td =
+                "<tr><td>" + value.id + "</td> <td>" + value.nik + "</td> <td>" + value.nama + "</td> <td>" + value.TTL + "</td> <td>" + value.Foto + "</td> <td>" + value.tiimestamp + "</td> </tr>";
+              $("#mytable").find("tbody").append(td);
+            });
+          }, 
+        });
+      }
+
+      //create new data
+      function post() {
+        let editID = document.getElementById("myID").value;
+        let nik = document.getElementById("nik").value;
+        let name = document.getElementById("name").value;
+        let tl = document.getElementById("tl").value;
+        let foto = document.getElementById("foto").value;
+        let ts = document.getElementById("ts").value;
+        let dataText = { ID: editID, NIK: nik, Nama: name, TTL: tl, tiimestamp: ts };
+        let dataJson = JSON.stringify(dataText);
+        $.ajax({
+          url: url,
+          method: "POST",
+          data: dataJson,
+          contentType: "application/json",
+          dataType: "text",
+          success: function (result) {
+              document.getElementById("view").innerHTML = result;
+            get();
+          },
+        });
+      }
+
+      function put() {
+        let editID = document.getElementById("myID").value;
+        let nik = document.getElementById("nik").value;
+        let name = document.getElementById("name").value;
+        let tl = document.getElementById("tl").value;
+        let foto = document.getElementById("foto").value;
+        let ts = document.getElementById("ts").value;
+        let dataText = { ID: editID, NIK: nik, Nama: name, TTL: tl, tiimestamp: ts  };
+        let dataJson = JSON.stringify(dataText);
+        $.ajax({
+          url: "http://localhost:8080/person",
+          method: "PUT",
+          data: dataJson,
+          contentType: "application/json",
+          dataType: "text",
+          success: function (result) {
+              document.getElementById("view").innerHTML = result;
+            get();
+          },
+        });
+      }
+
+      function delID() {
+        let editID = document.getElementById("myID").value;
+        let dataText = { ID: editID };
+        let dataJson = JSON.stringify(dataText);
+        $.ajax({
+          url: url,
+          method: "DELETE",
+          data: dataJson,
+          contentType: "application/json",
+          dataType: "text",
+          success: function (result) {
+              document.getElementById("view").innerHTML = result;
+            get();
+          },
+        });
+      }
+    </script>
+    <table>
+      <tr>
+        <td>ID</td>
+        <td>:</td>
+        <td><input type="text" id="myID" name="myid" /></td>
+        <td><button onclick="get()">GET</button></td>
+      </tr>
+      <tr>
+        <td>NIK</td>
+        <td>:</td>
+        <td><input type="text" id="nik" name="nik" /></td>
+        <td><button onclick="post()">INSERT</button></td>
+      </tr>
+      <tr>
+        <td>Nama</td>
+        <td>:</td>
+        <td><input type="text" id="name" name="nama" /></td>
+        <td><button onclick="put()">UPDATE</button></td>
+      </tr>
+      <tr>
+        <td>TL</td>
+        <td>:</td>
+        <td><input type="text" id="tl" name="tgl" /></td>
+        <td><button onclick="delID()">DELETE</button></td>
+      </tr>
+      <tr>
+        <td>Foto</td>
+        <td>:</td>
+        <td><input type="file" id="foto" name="foto" /></td>
+      </tr>
+      <tr>
+        <td>Timestamp</td>
+        <td>:</td>
+        <td>
+            <input type="timestamp" id="tiimestamp" name="ts" />
+        </td>
+      </tr>
+    </table>
+
+    <hr />
+    <br />
+
+   
+    
+    <table id="mytable" border="1">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>NIK</th>
+          <th>Nama</th>
+          <th>Tanggal Lahir</th>
+          <th>Foto</th>
+          <th>Timestamp</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div id="view" style="font-style: italic;"></div>
+  </body>
+</html>
